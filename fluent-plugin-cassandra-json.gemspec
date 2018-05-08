@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{Insert json data to cassandra plugin for fluentd.}
   spec.description   = %q{Insert json data to cassandra plugin for fluentd.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = "https://github.com/joker1007/fluent-plugin-cassandra-json"
   spec.license       = "Apache-2.0"
 
   test_files, files  = `git ls-files -z`.split("\x0").partition do |f|
