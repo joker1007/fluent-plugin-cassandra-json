@@ -1,8 +1,8 @@
 # fluent-plugin-cassandra-json
 
-[Fluentd](https://fluentd.org/) output plugin to do something.
+[Fluentd](https://fluentd.org/) output plugin to insert json data to cassandra.
 
-TODO: write description for you plugin.
+This plugin support complex data type like collection.
 
 ## Installation
 
@@ -26,15 +26,76 @@ And then execute:
 $ bundle
 ```
 
+## Plugin helpers
+
+* [inject](https://docs.fluentd.org/v1.0/articles/api-plugin-helper-inject)
+* [formatter](https://docs.fluentd.org/v1.0/articles/api-plugin-helper-formatter)
+
+* See also: [Output Plugin Overview](https://docs.fluentd.org/v1.0/articles/output-plugin-overview)
+
 ## Configuration
 
-You can generate configuration template:
+### hosts (array) (required)
 
-```
-$ fluent-plugin-config-format output cassandra_json
-```
+The entire list of cluster members for initial lookup
 
-You can copy and paste generated documents here.
+### port (integer) (optional)
+
+Cassandra native protocol port
+
+Default value: `9042`.
+
+### username (string) (optional)
+
+Cluster username
+
+### password (string) (optional)
+
+Cluster password
+
+### cluster_options (hash) (optional)
+
+Other Cluster option parameters
+
+Default value: `{}`.
+
+### consistency (enum) (optional)
+
+Set consistency level
+
+Available values: any, one, two, three, quorum, all, local_quorum, each_quorum, serial, local_serial, local_one
+
+Default value: `one`.
+
+### keyspace (string) (required)
+
+Target keyspace name
+
+### table (string) (required)
+
+Target table name
+
+### if_not_exists (bool) (optional)
+
+Use IF NOT EXIST option on INSERT
+
+### ttl (integer) (optional)
+
+Use TTL option on INSERT
+
+### skip_invalid_rows (bool) (optional)
+
+Treat request as success, even if invalid rows exist
+
+Default value: `true`.
+
+
+### \<format\> section (optional) (multiple)
+
+#### @type () (optional)
+
+Default value: `json`.
+
 
 ## Copyright
 
