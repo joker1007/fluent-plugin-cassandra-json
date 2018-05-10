@@ -100,10 +100,12 @@ module Fluent
           commit_write(chunk.unique_id)
           return
         end
+        keyspace = extract_placeholders(@keyspace, chunk.metadata)
+        table = extract_placeholders(@table, chunk.metadata)
 
         futures = chunk.open do |io|
           io.map do |line|
-            cql = "INSERT INTO #{@keyspace}.#{@table} JSON '#{line}'"
+            cql = "INSERT INTO #{keyspace}.#{table} JSON '#{line}'"
             cql << " IF NOT EXISTS" if @if_not_exists
             cql << " USING TTL #{@ttl}" if @ttl && @ttl > 0
             future = @session.execute_async(cql, consistency: @consistency)
