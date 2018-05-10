@@ -79,7 +79,7 @@ module Fluent
         @session = @cluster.connect(@keyspace)
       end
 
-      def stop
+      def close
         super
 
         @session.close
