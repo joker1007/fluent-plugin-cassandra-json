@@ -7,8 +7,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["joker1007"]
   spec.email   = ["kakyoin.hierophant@gmail.com"]
 
-  spec.summary       = %q{Insert json data to cassandra plugin for fluentd.}
-  spec.description   = %q{Insert json data to cassandra plugin for fluentd.}
+  spec.summary       = %q{Insert data to cassandra plugin for fluentd (Use INSERT JSON).}
+  spec.description   = %q{Insert data to cassandra plugin for fluentd (Use INSERT JSON).}
   spec.homepage      = "https://github.com/joker1007/fluent-plugin-cassandra-json"
   spec.license       = "Apache-2.0"
 
