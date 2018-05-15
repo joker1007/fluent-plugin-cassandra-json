@@ -69,7 +69,7 @@ module Fluent
         @cluster_options.merge!(username: @username) if @username
         @cluster_options.merge!(password: @password) if @password
         formatter_config = conf.elements("format")[0]
-        @formatter = formatter_create(usage: 'out_bigquery_for_insert', type: 'json', conf: formatter_config)
+        @formatter = formatter_create(usage: 'out_cassandra_for_insert', type: 'json', conf: formatter_config)
       end
 
       def start
