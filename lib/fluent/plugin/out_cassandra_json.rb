@@ -106,7 +106,7 @@ module Fluent
         futures = chunk.open do |io|
           io.map do |line|
             line.chomp!
-            cql = "INSERT INTO #{keyspace}.#{table} JSON '#{line}'"
+            cql = "INSERT INTO #{keyspace}.#{table} JSON '#{line.gsub("'", "''")}'"
             cql << " IF NOT EXISTS" if @if_not_exists
             cql << " USING TTL #{@ttl}" if @ttl && @ttl > 0
             @log.debug(cql)
