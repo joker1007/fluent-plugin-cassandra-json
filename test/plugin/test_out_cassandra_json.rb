@@ -16,6 +16,7 @@ class CassandraJsonOutputTest < Test::Unit::TestCase
     port #{ENV.fetch("CASSANDRA_PORT", "9042")}
     keyspace test_keyspace
     table test_table
+    idempotent true
   ]
 
   test "write data" do

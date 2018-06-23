@@ -83,6 +83,10 @@ Use IF NOT EXIST option on INSERT
 
 Use TTL option on INSERT
 
+### idempotent (bool) (optional)
+
+Specify whether this statement can be retried safely on timeout
+
 ### skip_invalid_rows (bool) (optional)
 
 Treat request as success, even if invalid rows exist

@@ -48,6 +48,8 @@ module Fluent
         desc: "Use IF NOT EXIST option on INSERT"
       config_param :ttl, :integer, default: nil,
         desc: "Use TTL option on INSERT"
+      config_param :idempotent, :bool, default: false,
+        desc: "Specify whether this statement can be retried safely on timeout"
 
       config_param :skip_invalid_rows, :bool, default: true,
         desc: "Treat request as success, even if invalid rows exist"
@@ -110,7 +112,7 @@ module Fluent
             cql << " IF NOT EXISTS" if @if_not_exists
             cql << " USING TTL #{@ttl}" if @ttl && @ttl > 0
             @log.debug(cql)
-            future = @session.execute_async(cql, consistency: @consistency)
+            future = @session.execute_async(cql, consistency: @consistency, idempotent: @idempotent)
             future.on_failure do |error|
               if @skip_invalid_rows
                 @log.warn("failed to insert", record: line, error: error)
