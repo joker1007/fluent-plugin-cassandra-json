@@ -78,13 +78,15 @@ module Fluent
         super
 
         @cluster = Cassandra.cluster(@cluster_options)
-        @session = @cluster.connect(@keyspace)
+      end
+
+      def session
+        Thread.current[:session] ||= @cluster.connect(@keyspace)
       end
 
       def close
         super
 
-        @session.close
         @cluster.close
       end
 
@@ -112,7 +114,7 @@ module Fluent
             cql << " IF NOT EXISTS" if @if_not_exists
             cql << " USING TTL #{@ttl}" if @ttl && @ttl > 0
             @log.debug(cql)
-            future = @session.execute_async(cql, consistency: @consistency, idempotent: @idempotent)
+            future = session.execute_async(cql, consistency: @consistency, idempotent: @idempotent)
             future.on_failure do |error|
               if @skip_invalid_rows
                 @log.warn("failed to insert", record: line, error: error)
