@@ -48,7 +48,7 @@ module Fluent
         desc: "Use IF NOT EXIST option on INSERT"
       config_param :ttl, :integer, default: nil,
         desc: "Use TTL option on INSERT"
-      config_param :idempotent, :bool, default: false,
+      config_param :idempotent, :bool, default: true,
         desc: "Specify whether this statement can be retried safely on timeout"
       config_param :default_unset, :bool, default: false,
         desc: "Specify whether column not defined in the JSON is set to null or is ignored (If false, column not defined in the JSON is set to null. It is cassandra default)"
