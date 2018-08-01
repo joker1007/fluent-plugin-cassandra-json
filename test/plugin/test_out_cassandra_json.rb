@@ -148,6 +148,94 @@ class CassandraJsonOutputTest < Test::Unit::TestCase
     end
   end
 
+  test "write data (default_unset is false)" do
+    conf = %[
+      hosts #{ENV.fetch("CASSANDRA_HOST", "127.0.0.1")}
+      port #{ENV.fetch("CASSANDRA_PORT", "9042")}
+      keyspace test_keyspace
+      table test_table
+      default_unset false
+    ]
+    driver = create_driver(conf)
+    time = Time.local(2018, 5, 8, 14, 10, 5)
+    data = {
+      "id" => 1,
+      "col1" => "textdata",
+      "col2" => time,
+      "col3" => true,
+      "col4" => 1.23,
+      "col5" => [1, 2, 3],
+      "col6" => ["one", "two", "three"],
+      "col7" => {"key1" => "val1", "key2" => "val2"},
+    }
+    data2 = {
+      "id" => 1,
+      "col1" => "textdata2",
+    }
+    driver.run do
+      driver.feed("tag", Time.now.to_i, data)
+      driver.flush
+      result = @session.execute("SELECT * FROM test_keyspace.test_table")
+      assert { result.size == 1 }
+      driver.feed("tag", Time.now.to_i, data2)
+    end
+
+    result = @session.execute("SELECT * FROM test_keyspace.test_table")
+    assert { result.size == 1 }
+
+    first = result.each.to_a[0]
+    assert { first["id"] == 1 }
+    assert { first["col1"] == "textdata2" }
+    (2..7).each do |i|
+      assert { first["col#{i}"].nil? }
+    end
+  end
+
+  test "write data (default_unset is true)" do
+    conf = %[
+      hosts #{ENV.fetch("CASSANDRA_HOST", "127.0.0.1")}
+      port #{ENV.fetch("CASSANDRA_PORT", "9042")}
+      keyspace test_keyspace
+      table test_table
+      default_unset true
+    ]
+    driver = create_driver(conf)
+    time = Time.local(2018, 5, 8, 14, 10, 5)
+    data = {
+      "id" => 1,
+      "col1" => "textdata",
+      "col2" => time,
+      "col3" => true,
+      "col4" => 1.23,
+      "col5" => [1, 2, 3],
+      "col6" => ["one", "two", "three"],
+      "col7" => {"key1" => "val1", "key2" => "val2"},
+    }
+    data2 = {
+      "id" => 1,
+      "col1" => "textdata2",
+    }
+    driver.run do
+      driver.feed("tag", Time.now.to_i, data)
+      driver.flush
+      result = @session.execute("SELECT * FROM test_keyspace.test_table")
+      assert { result.size == 1 }
+      driver.feed("tag", Time.now.to_i, data2)
+    end
+
+    result = @session.execute("SELECT * FROM test_keyspace.test_table")
+    assert { result.size == 1 }
+
+    first = result.each.to_a[0]
+    expected = data.dup
+    expected["col1"] = "textdata2"
+    expected["col6"] = Set.new(data["col6"])
+    assert { first["id"] == expected["id"] }
+    (1..7).each do |i|
+      assert { first["col#{i}"] == expected["col#{i}"] }
+    end
+  end
+
   private
 
   def create_driver(conf = CONFIG)

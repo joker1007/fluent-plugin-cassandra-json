@@ -87,6 +87,12 @@ Use TTL option on INSERT
 
 Specify whether this statement can be retried safely on timeout
 
+### default_unset (bool) (optional)
+
+Specify whether column not defined in the JSON is set to null or is ignored (If false, column not defined in the JSON is set to null. It is cassandra default)
+
+Default value: `false`.
+
 ### skip_invalid_rows (bool) (optional)
 
 Treat request as success, even if invalid rows exist

@@ -50,6 +50,8 @@ module Fluent
         desc: "Use TTL option on INSERT"
       config_param :idempotent, :bool, default: false,
         desc: "Specify whether this statement can be retried safely on timeout"
+      config_param :default_unset, :bool, default: false,
+        desc: "Specify whether column not defined in the JSON is set to null or is ignored (If false, column not defined in the JSON is set to null. It is cassandra default)"
 
       config_param :skip_invalid_rows, :bool, default: true,
         desc: "Treat request as success, even if invalid rows exist"
@@ -110,7 +112,7 @@ module Fluent
         futures = chunk.open do |io|
           io.map do |line|
             line.chomp!
-            cql = "INSERT INTO #{keyspace}.#{table} JSON '#{line.gsub("'", "''")}'"
+            cql = "INSERT INTO #{keyspace}.#{table} JSON '#{line.gsub("'", "''")}'#{@default_unset ? " DEFAULT UNSET" : ""}"
             cql << " IF NOT EXISTS" if @if_not_exists
             cql << " USING TTL #{@ttl}" if @ttl && @ttl > 0
             @log.debug(cql)
